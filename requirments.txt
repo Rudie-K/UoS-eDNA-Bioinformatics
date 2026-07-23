@@ -1,0 +1,5 @@
+# Sussex eDNA Bioinformatics Pipeline
+# Python dependencies
+
+pandas>=2.2.0
+requests>=2.32.0
