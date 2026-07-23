@@ -1,6 +1,19 @@
-# Sussex eDNA Bioinformatics Pipeline
+# UoS eDNA Bioinformatics Pipeline
 
 An automated environmental DNA (eDNA) metabarcoding pipeline that converts raw NCBI SRA sequencing data into taxonomically annotated species tables.
+
+This pipeline was created as a collaboration between the Genome Damage and Stability Centre (GDSC), and Ecology and Evolution (EE) department at the University of Sussex (UoS). 
+It is built for research and meant to serve as an alternative to external FASTQ analysis.
+
+The upload here is hardcoded to the example dataset "SR normalised Clark et al 2024" (Clark, et al,. 2024) but the file location is easily adapatable.
+
+- If FASTQ files already exist, create a folder named **fqconvert** in your working directory and place them in there.
+
+- If working with similar archived files change line 16 **TARGET_NAME="SR normalised Clark et al 2024"** of **00_sra_to_fastq.sh** to your chosen folder and ensure it is in the same directory as the pipeline.
+
+After running your outputs can be traced and validated at every stage through the folders in the geneerated **runs** folder. A run will be created with the start date.
+
+If only interested in the final report, type **master_species_composition_taxonomy.csv** in your root directory.
 
 ---
 
@@ -8,7 +21,7 @@ An automated environmental DNA (eDNA) metabarcoding pipeline that converts raw N
 
 This repository includes:
 
-- The complete Sussex eDNA bioinformatics pipeline
+- The complete eDNA bioinformatics pipeline
 - Benchmark NCBI SRA sequencing data
 - An example annotated species table (`master_species_composition.csv`)
 - The original Nature Metrics reference dataset (`reference_data.xlsx`)
@@ -16,6 +29,9 @@ This repository includes:
 ---
 
 ## Requirements
+
+This pipeline was validated on WSL Ubuntu and built on Ubuntu and the Linux Rocky 9 Artemis HPC Cluster.
+Your experience on other operating systems may vary.
 
 Install:
 
