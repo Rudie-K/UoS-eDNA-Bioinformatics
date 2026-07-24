@@ -21,7 +21,7 @@ If only interested in the final report, type **master_species_composition_taxono
 
 This repository includes:
 
-- The complete eDNA bioinformatics pipeline
+- The complete eDNA metabarcoding pipeline for **MiFish-U 12S** and **MarVer3 16S** primers
 - Benchmark NCBI SRA sequencing data
 - An example annotated species table (`master_species_composition.csv`)
 - The original Nature Metrics reference dataset (`reference_data.xlsx`)
