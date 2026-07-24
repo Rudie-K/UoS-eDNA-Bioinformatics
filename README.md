@@ -23,7 +23,7 @@ This repository includes:
 
 - The complete eDNA metabarcoding pipeline for **MiFish-U 12S** and **MarVer3 16S** primers
 - Benchmark NCBI SRA sequencing data
-- An example annotated species table (`master_species_composition.csv`)
+- An example of the output species table (`master_species_composition.csv`)
 - The original Nature Metrics reference dataset (`reference_data.xlsx`)
 
 ---
