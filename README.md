@@ -11,7 +11,7 @@ The upload here is hardcoded to the example dataset "SR normalised Clark et al 2
 
 - If working with similar archived files change line 16 **TARGET_NAME="SR normalised Clark et al 2024"** of **00_sra_to_fastq.sh** to your chosen folder and ensure it is in the same directory as the pipeline.
 
-After running your outputs can be traced and validated at every stage through the folders in the geneerated **runs** folder. A run will be created with the start date.
+After running your outputs can be traced and validated at every stage through the folders in the generated **runs** folder. A run will be created with the date of running the pipeline.
 
 If only interested in the final report, type **master_species_composition_taxonomy.csv** in your root directory.
 
