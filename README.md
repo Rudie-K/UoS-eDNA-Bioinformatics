@@ -5,6 +5,8 @@ An automated environmental DNA (eDNA) metabarcoding pipeline that converts raw N
 This pipeline was created as a collaboration between the Genome Damage and Stability Centre (GDSC), and Ecology and Evolution (EE) department at the University of Sussex (UoS). 
 It is built for research and meant to serve as an alternative to external FASTQ analysis.
 
+Currently only works for **12S MiFish-U** and **16S MarVer3** Primers.
+
 The upload here is hardcoded to the example dataset "SR normalised Clark et al 2024" (Clark, et al,. 2024) but the file location is easily adapatable.
 
 - If FASTQ files already exist, create a folder named **fqconvert** in your working directory and place them in there.
