@@ -110,7 +110,7 @@ Rudie Kauhanen. *UoS eDNA Bioinformatics Pipeline version 1.0*., 2026. https://g
 
 Please also cite the software used by this workflow where appropriate, including:
 
-- Cutadapt
-- USEARCH
-- NCBI BLAST
-- NCBI Taxonomy
+- **Cutadapt**
+- **USEARCH**
+- **NCBI BLAST**
+- **NCBI Taxonomy**
