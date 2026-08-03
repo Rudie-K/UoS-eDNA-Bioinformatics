@@ -32,7 +32,7 @@ This repository includes:
 
 ## Requirements
 
-This pipeline was validated on WSL Ubuntu and built on Ubuntu and the Linux Rocky 9 Artemis HPC Cluster.
+This pipeline was validated on WSL Ubuntu and built on **Ubuntu** and the **Linux Rocky 9 Artemis High-Performance-Computing (HPC) Cluster**.
 Your experience on other operating systems may vary.
 
 Install:
