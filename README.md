@@ -89,10 +89,6 @@ The final output file is:
 master_species_composition.csv
 ```
 
-On supported Linux systems, this file opens automatically when the pipeline finishes.
-
----
-
 ## Included example files
 
 If you simply wish to inspect the benchmark results without running the pipeline, the repository already includes:
