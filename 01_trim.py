@@ -47,8 +47,8 @@ if shutil.which("cutadapt") is None:
 
 primers = {
     "MiFish_12S": {
-        "min_len": 163, "max_len": 185, 
-        "q_score": 20, "error_rate": 0.15,
+        "min_len": 100, "max_len": 300, 
+        "q_score": 15, "error_rate": 0.20,
         "variants": {
             "Standard_Universal": {
                 "fwd": "GTCGGTAAAACTCGTGCCAGC", "rev": "CATAGTGGGGTATCTAATCCCAGTTTG",
@@ -57,7 +57,7 @@ primers = {
         }
     },
     "MarVer3_16S": {
-        "min_len": 232, "max_len": 274,
+        "min_len": 200, "max_len": 350,
         "q_score": 15, # Relaxed to catch primers at noisy 250bp ends
         "error_rate": 0.20, # Increased tolerance for short terminal matches
         "variants": {
@@ -94,8 +94,8 @@ def scout_primers(r1, locus, locus_cfg):
                 for i, line in enumerate(f):
                     if i >= 4000: break
                     if i % 4 == 1:
-                        if fwd_sig in line[0:50]: fwd_hits += 1
-                        if rev_rc_sig in line[-50:]: rev_3p_hits += 1
+                        if fwd_sig in line: fwd_hits += 1
+                        if rev_rc_sig in line: rev_3p_hits += 1
             if fwd_hits > 20: return "Strict-5p", v_name, s
             if rev_3p_hits > 20: return "3p-ReadThrough", v_name, s
         except OSError:
@@ -153,11 +153,16 @@ def safe_label(text):
     return re.sub(r"[^A-Za-z0-9._-]+", "_", text)
 
 def expected_mate_name(filename):
-    # Infer the standard paired-end mate name from the read 1 filename.
+    # Style 1: Standard Illumina style (_R1_001 / _R2_001)
+    if "_R1_001.fastq" in filename:
+        return filename.replace("_R1_001.fastq", "_R2_001.fastq")
+        
+    # Style 2: SRA / Simple style (_1 / _2)
     if filename.endswith("_1.fastq.gz"):
         return filename[:-11] + "_2.fastq.gz"
     if filename.endswith("_1.fastq"):
         return filename[:-8] + "_2.fastq"
+        
     return None
 
 def find_mate_file(input_dir, filename):
@@ -188,16 +193,22 @@ summary_data = []
 
 with open(REPORT_FILE, "w") as report:
     report.write("Sussex eDNA Pipeline Audit: Multi-Variant Processing\n" + "="*55 + "\n\n")
+    
+    # Captures BOTH types of forward files seamlessly
     files = sorted(
         f for f in os.listdir(INPUT_DIR)
-        if f.endswith("_1.fastq") or f.endswith("_1.fastq.gz")
+        if f.endswith("_1.fastq") or f.endswith("_1.fastq.gz") or 
+           f.endswith("_R1_001.fastq") or f.endswith("_R1_001.fastq.gz")
     )
     
     for filename in files:
-        if filename.endswith("_1.fastq.gz"):
-            sample_id = filename[:-11]
+        # Dynamically extract clean sample_id based on naming style
+        if "_R1_001.fastq" in filename:
+            suffix_len = 16 if filename.endswith(".gz") else 13
+            sample_id = filename[:-suffix_len]
         else:
-            sample_id = filename[:-8]
+            suffix_len = 11 if filename.endswith(".gz") else 8
+            sample_id = filename[:-suffix_len]
 
         r1 = os.path.join(INPUT_DIR, filename)
         r2 = find_mate_file(INPUT_DIR, filename)
@@ -227,11 +238,13 @@ with open(REPORT_FILE, "w") as report:
             
             # Use Locus-specific tuning for Cutadapt
             if mode == "Strict-5p":
-                cmd_args = ["-g", f"^{s['fwd']}", "-G", f"^{s['rev']}", "--discard-untrimmed"]
+                # Temporarily removed length constraint for diagnostic logging
+                cmd_args = ["-g", f"{s['fwd']}", "-G", f"{s['rev']}", "--discard-untrimmed"]
             elif mode == "3p-ReadThrough":
                 cmd_args = ["-a", s['rev_rc'], "-A", s['fwd_rc'], "--discard-untrimmed"]
             else:
                 cmd_args = ["-m", str(cfg['min_len']), "-M", str(cfg['max_len'])]
+
 
             mode_tag = safe_label(mode)
             variant_tag = safe_label(variant)
@@ -266,6 +279,19 @@ with open(REPORT_FILE, "w") as report:
             
             # Collect and log data
             stats = extract_stats(log_file)
+            recovered_count = int(stats["Written"])
+            # so they don't break dereplication/denoising steps later.
+            if recovered_count == 0:
+                if os.path.exists(out1): os.remove(out1)
+                if os.path.exists(out2): os.remove(out2)
+                print(f"  [Dropped] {locus} ({variant}) - 0 reads recovered.")
+                
+                summary_data.append({
+                    "Sample": sample_id, "Locus": locus, "Mode": mode, "Variant": variant, 
+                    "Status": "DROPPED", "Details": "Zero reads matching primers", 
+                    "Total": stats["Total"], "Recovered": "0", "Rate": "0.0%"
+                })
+                continue
             # Successful runs get a standard OK record plus the parsed recovery stats.
             summary_row = {"Sample": sample_id, "Locus": locus, "Mode": mode, "Variant": variant, 
                            "Status": "OK", "Details": "", "Total": stats["Total"], "Recovered": stats["Written"], "Rate": stats["Percent"]}
