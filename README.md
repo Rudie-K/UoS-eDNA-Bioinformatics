@@ -9,7 +9,7 @@ Currently only works for **12S MiFish-U** and **16S MarVer3** Primers.
 
 The upload here is hardcoded to the example dataset "SR normalised Clark et al 2024" (Clark, et al,. 2024) but the file location is easily adapatable.
 
-- If FASTQ files already exist, create a folder named **fqconvert** in your working directory and place them in there and ensure they end in _1.fastq or _2.fastq.
+- Program accepts formats including **NCBI archived (.file)** **.fastq** and **.fastq.gz**. All files should be put in the dataset folder (SR normalised Clark et al 2024 if unchanged)
 
 - If working with similar archived files change line 16 **TARGET_NAME="SR normalised Clark et al 2024"** of **00_sra_to_fastq.sh** to your chosen folder and ensure it is in the same directory as the pipeline.
 
